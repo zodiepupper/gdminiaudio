@@ -17,7 +17,7 @@ env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
 
 #link user32.h for MessageBoxA
-env.Append(LIBS=["user32"])
+# env.Append(LIBS=["user32"])
 
 # link sunvox library
 # env.Append(IMPLIBSUFFIX=".dll")
@@ -25,14 +25,14 @@ env.Append(LIBS=["user32"])
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "gdextensiontest/bin/libgdexample.{}.{}.framework/libgdexample.{}.{}".format(
+        "gdextensiontest/bin/gdminiaudio.{}.{}.framework/gdminiaudio.{}.{}".format(
             env["platform"], env["target"], env["platform"], env["target"]
         ),
         source=sources,
     )
 else:
     library = env.SharedLibrary(
-        "gdextensiontest/bin/libgdexample{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        "gdextensiontest/bin/gdminiaudio{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
         source=sources,
     )
 
