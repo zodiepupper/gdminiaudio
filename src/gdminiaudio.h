@@ -1,12 +1,14 @@
 #ifndef GDMINIAUDIO_H
 #define GDMINIAUDIO_H
+#include "miniaudio.h"
 
-#include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/node.hpp>
+
 
 namespace godot {
 
-class GDMiniaudio : public Object {
-    GDCLASS(GDMiniaudio, Object)
+class GDMiniaudio : public Node {
+    GDCLASS(GDMiniaudio, Node)
 
 private:
 
@@ -16,6 +18,8 @@ protected:
 public:
     GDMiniaudio();
     ~GDMiniaudio();
+    ma_result result;
+    ma_engine engine;
 
     void _process(double delta);
     void _ready();
