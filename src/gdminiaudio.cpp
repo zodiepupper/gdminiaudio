@@ -99,7 +99,7 @@ void GDMiniaudio::load_audio_file(String path, Ref<MiniaudioSound> file) {
         printf("Failed to load audio file.\n");
         printf("Error code: %d\n", result);
     }
-    UtilityFunctions::print("adding ma_sound to minaudiosound object");
+    UtilityFunctions::print("adding ma_sound to miniaudiosound object");
 }
 
 void GDMiniaudio::play_sound(Ref<MiniaudioSound> sound) {
