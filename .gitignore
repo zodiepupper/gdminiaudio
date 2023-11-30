@@ -22,6 +22,7 @@ cache/
 *.o
 *.os
 *.so
+*.obj
 *.bc
 *.pyc
 *.dblite
