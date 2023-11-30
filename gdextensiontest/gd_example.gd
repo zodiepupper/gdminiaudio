@@ -1,32 +1,36 @@
 extends Node
 
-var miniaudio = GDMiniaudio.new()
+var miniaudio := MiniaudioServer
 
 var loaded_audio : MiniaudioSound = MiniaudioSound.new()
+var cam_projection := Vector3()
+
+var loaded_audio_files : Array[MiniaudioSound]
 
 @onready var sound = $sound
+@onready var top = $Control/HSplitContainer/SplitContainer/SubViewportContainer/top
+@onready var back = $Control/HSplitContainer/SplitContainer/SubViewportContainer2/back
 
-func _ready():
-	miniaudio.initialize_engine()
-	miniaudio.start_engine()
-#	play_wav("C:/Users/zodie/OneDrive/Documents/0assets/sunvox/exports/chill ghost zone very long.wav")
-	get_window().files_dropped.connect(func(files):
-		for file in files:
-			if file.ends_with('.wav'):
-				loaded_audio = MiniaudioSound.new()
-				miniaudio.load_audio_file(file, loaded_audio)
-				miniaudio.play_sound(loaded_audio)
-			elif file.ends_with('.mp3'):
-				loaded_audio = MiniaudioSound.new()
-				miniaudio.load_audio_file(file, loaded_audio)
-				miniaudio.play_sound(loaded_audio)
-			elif file.ends_with('.flac'):
-				loaded_audio = MiniaudioSound.new()
-				miniaudio.load_audio_file(file, loaded_audio)
-				miniaudio.play_sound(loaded_audio)
-		)
+func _init():
+	MiniaudioServer.setup_default_node_graph()
+#	MiniaudioServer.initialize_engine()
+#	MiniaudioServer.start_engine()
+#	MiniaudioServer.initialize_node_graph()
 
-func _process(delta):
-	miniaudio.set_sound_position(loaded_audio, sin(Time.get_ticks_msec()/1000.0)*4.0, sin(Time.get_ticks_msec()/1000.0)*4.0, cos(Time.get_ticks_msec()/1000.0)*4.0)
-	var sound_pos := miniaudio.get_sound_position(loaded_audio)
-	sound.position = sound_pos
+#func _ready():
+#	miniaudio.load_audio_file("C:/Users/zodie/OneDrive/Documents/0assets/sunvox/exports/chill ghost zone very long.wav", loaded_audio)
+#	loaded_audio_files.append(loaded_audio)
+#	get_window().files_dropped.connect(func(files):
+#		for file in files:
+#			if file.ends_with('.wav') or file.ends_with('.flac') or file.ends_with('.mp3'):
+#				var tmp = MiniaudioSound.new()
+#				miniaudio.load_audio_file(file, tmp)
+#				loaded_audio_files.append(tmp)
+#		)
+#
+#func _process(delta):
+#	for file in loaded_audio_files:
+#		miniaudio.set_sound_position(file, cam_projection.x,cam_projection.y,cam_projection.z)
+#		miniaudio.set_sound_velocity(file, sound.linear_velocity.x,sound.linear_velocity.y,sound.linear_velocity.z)
+#	sound.position = Vector3(cam_projection.x,cam_projection.y,cam_projection.z)
+

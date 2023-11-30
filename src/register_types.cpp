@@ -12,22 +12,19 @@
 
 using namespace godot;
 
-static GDMiniaudio *miniaudio_server = nullptr;
+static GDMiniaudio* miniaudio_server = nullptr;
 
 void initialize(ModuleInitializationLevel p_level) {
 
     if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
         ClassDB::register_class<MiniaudioSound>();
         ClassDB::register_class<GDMiniaudio>();
+        miniaudio_server = memnew(GDMiniaudio);
+        // miniaudio_server->initialize_engine();
+        // miniaudio_server->start_engine();
+        godot::Engine* engine{ godot::Engine::get_singleton()};
+        engine->register_singleton(StringName("MiniaudioServer"), miniaudio_server);
     }
-
-    // if (p_level == MODULE_INITIALIZAMTION_LEVEL_SCENE) {
-    //     miniaudio_server = memnew(GDiniaudio);
-    //     miniaudio_server->initialize_engine();
-    //     miniaudio_server->start_engine();
-    //     godot::Engine* engine{ godot::Engine::get_singleton()};
-    //     engine->register_singleton(StringName("GDMiniaudio"), GDMiniaudio::get_singleton());
-    // }
 }
 
 void uninitialize(ModuleInitializationLevel p_level) {

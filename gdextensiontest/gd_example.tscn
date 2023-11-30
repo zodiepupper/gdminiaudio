@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://8xt3g6gxdry6"]
+[gd_scene load_steps=9 format=3 uid="uid://8xt3g6gxdry6"]
 
 [ext_resource type="Script" path="res://gd_example.gd" id="1_2ybqk"]
+[ext_resource type="Script" path="res://viewport_sound_positioner.gd" id="2_q4x8r"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ilu4n"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -18,7 +19,26 @@ glow_enabled = true
 [sub_resource type="CylinderMesh" id="CylinderMesh_8rofy"]
 top_radius = 0.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_x0fut"]
+[sub_resource type="SphereMesh" id="SphereMesh_hcl0t"]
+
+[sub_resource type="GDScript" id="GDScript_y7t06"]
+script/source = "extends ItemList
+
+@onready var node = $\"../../..\"
+
+var items:Array=Array()
+
+func _ready():
+	item_clicked.connect(func(index, pos, mouse_index):
+		MiniaudioServer.play_sound(get_item_metadata(index))
+		)
+
+func _process(delta):
+	for item in node.loaded_audio_files:
+		if item not in items:
+			set_item_metadata(add_item(item.path), item)
+			items.append(item)
+"
 
 [node name="Node" type="Node"]
 script = ExtResource("1_2ybqk")
@@ -34,8 +54,65 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("CylinderMesh_8rofy")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -6, 0, 6)
+[node name="sound" type="RigidBody3D" parent="."]
+freeze = true
+freeze_mode = 1
 
-[node name="sound" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_x0fut")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="sound"]
+mesh = SubResource("SphereMesh_hcl0t")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+dragger_visibility = 2
+
+[node name="ItemList" type="ItemList" parent="Control/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+script = SubResource("GDScript_y7t06")
+
+[node name="SplitContainer" type="SplitContainer" parent="Control/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Control/HSplitContainer/SplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="top" type="SubViewport" parent="Control/HSplitContainer/SplitContainer/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(474, 648)
+render_target_update_mode = 4
+script = ExtResource("2_q4x8r")
+
+[node name="Camera3D" type="Camera3D" parent="Control/HSplitContainer/SplitContainer/SubViewportContainer/top"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 8, 0)
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="Control/HSplitContainer/SplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="back" type="SubViewport" parent="Control/HSplitContainer/SplitContainer/SubViewportContainer2"]
+handle_input_locally = false
+size = Vector2i(475, 648)
+render_target_update_mode = 4
+script = ExtResource("2_q4x8r")
+
+[node name="Camera3D2" type="Camera3D" parent="Control/HSplitContainer/SplitContainer/SubViewportContainer2/back"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)

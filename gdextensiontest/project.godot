@@ -15,6 +15,10 @@ run/main_scene="res://gd_example.tscn"
 config/features=PackedStringArray("4.1", "Mobile")
 config/icon="res://icon.svg"
 
+[audio]
+
+driver/enable_input=true
+
 [rendering]
 
 renderer/rendering_method="mobile"
