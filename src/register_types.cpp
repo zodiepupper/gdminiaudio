@@ -17,6 +17,8 @@ static GDMiniaudio* miniaudio_server = nullptr;
 void initialize(ModuleInitializationLevel p_level) {
 
     if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+        printf("MODULE_INITIALIZATION_LEVEL_SCENE\n");
+        ClassDB::register_class<MiniaudioInputDevice>();
         ClassDB::register_class<MiniaudioSound>();
         ClassDB::register_class<GDMiniaudio>();
         miniaudio_server = memnew(GDMiniaudio);

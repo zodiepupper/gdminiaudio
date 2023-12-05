@@ -6,6 +6,7 @@
 #include <godot_cpp/core/binder_common.hpp>
 #include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/ref.hpp>
+#include "miniaudio_input_device.h"
 
 using namespace godot;
 
@@ -43,14 +44,8 @@ class MiniaudioNode : public RefCounted {
         
 };
 
-struct ma_device_data_source {
-    ma_data_source_base base;
-    ma_pcm_rb buffer;
-};
-
 class GDMiniaudio : public Object {
     GDCLASS(GDMiniaudio, Object);
-    static GDMiniaudio *singleton;
 
     private:
         bool _check_engine();
@@ -62,16 +57,12 @@ class GDMiniaudio : public Object {
         GDMiniaudio();
         ~GDMiniaudio();
         
-        ma_device device;
-        ma_device_data_source input_device_data_source;
-        ma_data_source_node dataSourceNode;
-        
-        static GDMiniaudio* get_singleton();
-        
         ma_engine engine;
         ma_engine_config engine_config;
         ma_node_graph_config node_graph_config;
         ma_node_graph node_graph;
+        
+        MiniaudioInputDevice input_device;
         
         bool engine_initialized;
         bool engine_started;

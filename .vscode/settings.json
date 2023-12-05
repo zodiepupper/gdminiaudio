@@ -3,6 +3,9 @@
         "cmath": "cpp",
         "thread": "cpp",
         "iostream": "cpp",
-        "type_traits": "cpp"
-    }
+        "type_traits": "cpp",
+        "xlocale": "cpp",
+        "functional": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "C:\\ProgramData\\chocolatey\\bin\\gcc.exe"
 }
