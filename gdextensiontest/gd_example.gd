@@ -9,6 +9,8 @@ var cam_projection := Vector3()
 
 var loaded_audio_files : Array[MiniaudioSound]
 
+var thread := Thread.new()
+
 @onready var sound = $sound
 @onready var top = $Control/HSplitContainer/SplitContainer/SubViewportContainer/top
 @onready var back = $Control/HSplitContainer/SplitContainer/SubViewportContainer2/back
@@ -30,6 +32,12 @@ func _ready():
 				miniaudio.load_audio_file(file, tmp)
 				loaded_audio_files.append(tmp)
 		)
+	thread.start(push_audio_from_input_device)
+
+func push_audio_from_input_device():
+	while true:
+		var buffer = miniaudio.get_input_device().get_buffer()
+		miniaudio.get_remote_stream().gdma_push_buffer(buffer)
 
 func _process(delta):
 	if started:
@@ -37,4 +45,3 @@ func _process(delta):
 			miniaudio.set_sound_position(file, cam_projection.x,cam_projection.y,cam_projection.z)
 			miniaudio.set_sound_velocity(file, sound.linear_velocity.x,sound.linear_velocity.y,sound.linear_velocity.z)
 		sound.position = Vector3(cam_projection.x,cam_projection.y,cam_projection.z)
-

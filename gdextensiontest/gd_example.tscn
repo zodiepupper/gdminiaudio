@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://8xt3g6gxdry6"]
 
-[ext_resource type="Script" path="res://gd_example.gd" id="1_2ybqk"]
+[ext_resource type="Script" path="res://gd_example.gd" id="1_cmv5y"]
 [ext_resource type="Script" path="res://viewport_sound_positioner.gd" id="2_q4x8r"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ilu4n"]
@@ -41,7 +41,7 @@ func _process(delta):
 "
 
 [node name="Node" type="Node"]
-script = ExtResource("1_2ybqk")
+script = ExtResource("1_cmv5y")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_w8yxv")

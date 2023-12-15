@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/ref.hpp>
 #include "miniaudio_input_device.h"
+#include "gdminiaduio_remote_stream_data_source.h"
 
 using namespace godot;
 
@@ -62,7 +63,10 @@ class GDMiniaudio : public Object {
         ma_node_graph_config node_graph_config;
         ma_node_graph node_graph;
         
-        MiniaudioInputDevice input_device;
+        Ref<MiniaudioInputDevice> input_device;
+        MiniaudioSound *input_data_source_sound;
+        
+        Ref<GDMiniaudioRemoteStreamDataSource> default_remote_stream;
         
         bool engine_initialized;
         bool engine_started;
@@ -76,6 +80,9 @@ class GDMiniaudio : public Object {
         bool get_engine_initialized();
         bool get_engine_started();
         bool get_node_graph_initialized();
+        
+        Ref<MiniaudioInputDevice> get_input_device();
+        Ref<GDMiniaudioRemoteStreamDataSource> get_remote_stream();
         
         void initialize_engine();
         void start_engine();

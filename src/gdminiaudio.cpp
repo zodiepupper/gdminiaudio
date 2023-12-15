@@ -7,24 +7,46 @@
 using namespace godot;
 
 void GDMiniaudio::_bind_methods() {
-    
+    // setup and initialization stuffs
+    // this one is specifically for quick start for the voip test setup
     ClassDB::bind_method(D_METHOD("setup_default_node_graph"), &GDMiniaudio::setup_default_node_graph);
     ClassDB::bind_method(D_METHOD("initialize_engine"), &GDMiniaudio::initialize_engine);
     ClassDB::bind_method(D_METHOD("start_engine"), &GDMiniaudio::start_engine);
     ClassDB::bind_method(D_METHOD("initialize_node_graph"), &GDMiniaudio::initialize_node_graph);
+    
+    // get input device
+    ClassDB::bind_method(D_METHOD("get_input_device"), &GDMiniaudio::get_input_device);
+    // get default remote stream (for testing)
+    ClassDB::bind_method(D_METHOD("get_remote_stream"), &GDMiniaudio::get_remote_stream);
+    
+    // add and modify loaded sounds
     ClassDB::bind_method(D_METHOD("play_file", "path_to_file"), &GDMiniaudio::play_file);
     ClassDB::bind_method(D_METHOD("load_audio_file", "path_to_file"), &GDMiniaudio::load_audio_file);
     ClassDB::bind_method(D_METHOD("play_sound", "sound"), &GDMiniaudio::play_sound);
     ClassDB::bind_method(D_METHOD("set_sound_position", "sound", "X Position", "Y Position", "Z Position"), &GDMiniaudio::set_sound_position);
     ClassDB::bind_method(D_METHOD("get_sound_position", "sound"), &GDMiniaudio::get_sound_position);
     ClassDB::bind_method(D_METHOD("set_sound_velocity", "sound", "X Velocity", "Y Velocity", "Z Velocity"), &GDMiniaudio::set_sound_velocity);
+    
+    // class bindings for set/get of engine initialized bool
+    ClassDB::bind_method(D_METHOD("get_engine_initialized"), &GDMiniaudio::get_engine_initialized);
+    ClassDB::bind_method(D_METHOD("set_engine_initialized", "is_engine_started"), &GDMiniaudio::set_engine_initialized);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "engine_initialized"), "set_engine_initialized", "get_engine_initialized");
+    
+    // class bindings for set/get of enginge started bool
+    ClassDB::bind_method(D_METHOD("get_engine_started"), &GDMiniaudio::get_engine_started);
+    ClassDB::bind_method(D_METHOD("set_engine_started", "is_engine_started"), &GDMiniaudio::set_engine_started);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "engine_started"), "set_engine_started", "get_engine_started");
+    
+    // class bindings for set/get of node graph initialized bool
+    ClassDB::bind_method(D_METHOD("get_node_graph_initialized"), &GDMiniaudio::get_node_graph_initialized);
+    ClassDB::bind_method(D_METHOD("set_node_graph_initialized", "is_node_graph_initialized"), &GDMiniaudio::set_node_graph_initialized);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "node_graph_inintialized"), "set_node_graph_initialized", "get_node_graph_initialized");
 }
 
 // Initialize any variables here.
 GDMiniaudio::GDMiniaudio() {
+    input_device.instantiate();
+    default_remote_stream.instantiate();
     engine_initialized = false;
     engine_started = false;
     node_graph_initialized = false;
@@ -33,6 +55,14 @@ GDMiniaudio::GDMiniaudio() {
 
 // Add your cleanup here.
 GDMiniaudio::~GDMiniaudio() {}
+
+Ref<MiniaudioInputDevice> GDMiniaudio::get_input_device() {
+    return input_device;
+}
+
+Ref<GDMiniaudioRemoteStreamDataSource> GDMiniaudio::get_remote_stream() {
+    return default_remote_stream;
+}
 
 /**
  * @brief The method for setting the engine initialized variable.
@@ -198,15 +228,11 @@ void GDMiniaudio::setup_default_node_graph(){
         start_engine();
     }
     printf("initializing default input device\n");
-    input_device.initialize_default_input_device();
+    input_device->initialize_default_input_device(&engine);
+    default_remote_stream->gdma_init_remote_stream_data_source(&engine);
     ma_result result;
-    result = ma_data_source_node_init(ma_engine_get_node_graph(&engine), &input_device.dataSourceNodeConfig, NULL, &input_device.dataSourceNode);
-    printf("Initialized data source node: %d\n", result);
-    printf("source node bus count: %d\n",ma_node_get_output_bus_count(&input_device.dataSourceNode));
-    printf("endpoint node bus count: %d\n",ma_node_get_output_bus_count(ma_engine_get_endpoint(&engine)));
-    printf("source node channel count: %d\n",ma_node_get_output_channels(&input_device.dataSourceNode, 0));
-    result = ma_node_attach_output_bus(&input_device.dataSourceNode, 0, ma_node_graph_get_endpoint(&engine.nodeGraph), 0);
-    printf("Attached data source node: %d\n", result);
+    result = ma_node_attach_output_bus(&default_remote_stream->data_source_node, 0, ma_node_graph_get_endpoint(&engine.nodeGraph), 0);
+    printf("remote data source: %d\n", result);
 }
 
 // void GDMiniaudio::read_from_data_source() {

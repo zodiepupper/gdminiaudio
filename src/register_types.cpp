@@ -8,16 +8,18 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/classes/engine.hpp>
 
+#include <miniaudio_input_device.h>
+#include <gdminiaduio_remote_stream_data_source.h>
 #include <gdminiaudio.h>
 
 using namespace godot;
 
-static GDMiniaudio* miniaudio_server = nullptr;
+static GDMiniaudio* miniaudio_server;
 
 void initialize(ModuleInitializationLevel p_level) {
 
     if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-        printf("MODULE_INITIALIZATION_LEVEL_SCENE\n");
+        ClassDB::register_class<GDMiniaudioRemoteStreamDataSource>();
         ClassDB::register_class<MiniaudioInputDevice>();
         ClassDB::register_class<MiniaudioSound>();
         ClassDB::register_class<GDMiniaudio>();
@@ -30,20 +32,12 @@ void initialize(ModuleInitializationLevel p_level) {
 }
 
 void uninitialize(ModuleInitializationLevel p_level) {
-    
-    if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE && p_level != MODULE_INITIALIZATION_LEVEL_SERVERS) {
-        return;
-    }
-    
-    if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-        // ClassDB::register_class<GDMiniaudio>();
-    }
 
-    // if (p_level==MODULE_INITIALIZATION_LEVEL_SCENE) {
-    //     if (miniaudio_server){
-    //         memdelete(miniaudio_server);
-    //     }
-    // }
+    if (p_level==MODULE_INITIALIZATION_LEVEL_SCENE) {
+        if (miniaudio_server){
+            memdelete(miniaudio_server);
+        }
+    }
 }
 
 extern "C" {
